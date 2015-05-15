@@ -53,10 +53,10 @@ class Metasploit::Credential::Public < ActiveRecord::Base
   #
 
   search_with Metasploit::Credential::Search::Operator::Type,
-              class_names: %w{
+              class_names: %w(
                 Metasploit::Credential::BlankUsername
                 Metasploit::Credential::Username
-              }
+              )
 
   #
   # Instance Methods

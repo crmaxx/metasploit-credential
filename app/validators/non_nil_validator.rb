@@ -13,8 +13,7 @@ class NonNilValidator < ActiveModel::EachValidator
   # @param value [Object, nil] the value of `attribute`.
   # @return [void]
   def validate_each(model, attribute, value)
-    if value.nil?
-      model.errors.add(attribute, :nil)
-    end
+    return unless value.nil?
+    model.errors.add(attribute, :nil)
   end
 end

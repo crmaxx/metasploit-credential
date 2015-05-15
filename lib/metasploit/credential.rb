@@ -1,4 +1,3 @@
-
 #
 # Gems
 #
@@ -60,4 +59,3 @@ module Metasploit
     end
   end
 end
-

@@ -22,8 +22,7 @@ class Metasploit::Credential::SSHKey < Metasploit::Credential::Private
   # Attribute Validations
   #
 
-  validates :data,
-            presence: true
+  validates :data, presence: true
   #
   # Method Validations
   #
@@ -42,12 +41,9 @@ class Metasploit::Credential::SSHKey < Metasploit::Credential::Private
   # @return [false] if {#data} does not contain `'ENCRYPTED'` or {#data} is `nil`.
   # @return [true] if {#data} contains `'ENCRYPTED'`.
   def encrypted?
-    if data
-      # see https://github.com/net-ssh/net-ssh/blob/1b5db680fee66e1d846d0396eb1a68d3fabdc3de/lib/net/ssh/key_factory.rb#L72
-      data.match(/ENCRYPTED/)
-    else
-      false
-    end
+    return false unless data
+    # see https://github.com/net-ssh/net-ssh/blob/1b5db680fee66e1d846d0396eb1a68d3fabdc3de/lib/net/ssh/key_factory.rb#L72
+    data.match(/ENCRYPTED/)
   end
 
   # Whether the key data in {#data} is a private key.  Only private keys are supported as public keys cannot be used
@@ -56,12 +52,9 @@ class Metasploit::Credential::SSHKey < Metasploit::Credential::Private
   # @return [false] if {#data} does not contain `'-----BEGIN <type> PRIVATE KEY-----'` or {#data} is `nil`.
   # @return [true] if {#data} contains `'-----BEGIN <type> PRIVATE KEY-----'`.
   def private?
-    if data
-      # @see https://github.com/net-ssh/net-ssh/blob/1b5db680fee66e1d846d0396eb1a68d3fabdc3de/lib/net/ssh/key_factory.rb#L56-L69
-      data.match(/-----BEGIN (.+) PRIVATE KEY-----/)
-    else
-      false
-    end
+    return false unless data
+    # @see https://github.com/net-ssh/net-ssh/blob/1b5db680fee66e1d846d0396eb1a68d3fabdc3de/lib/net/ssh/key_factory.rb#L56-L69
+    data.match(/-----BEGIN (.+) PRIVATE KEY-----/)
   end
 
   # The {#data key data}'s fingerprint, suitable for displaying to the
@@ -79,22 +72,20 @@ class Metasploit::Credential::SSHKey < Metasploit::Credential::Private
   # @return [OpenSSL::PKey::PKey]
   # @raise [ArgumentError, OpenSSL::PKey::PKeyError] if {#data} cannot be loaded
   def openssl_pkey_pkey
-    if data
-      ask_passphrase = false
-      filename = "#{self.class}#data"
-      passphrase = nil
+    return unless data
+    ask_passphrase = false
+    filename = "#{self.class}#data"
+    passphrase = nil
 
-      Net::SSH::KeyFactory.load_data_private_key(data, passphrase, ask_passphrase, filename)
-    end
+    Net::SSH::KeyFactory.load_data_private_key(data, passphrase, ask_passphrase, filename)
   end
 
   # Validates that {#data} contains a private key and NOT a public key or some other non-key data.
   #
   # @return [void]
   def private
-    unless private?
-      errors.add(:data, :not_private)
-    end
+    return if private?
+    errors.add(:data, :not_private)
   end
 
   # Validates that {#data} can be read by Net::SSH and a `OpenSSL::PKey::PKey` created from {#data}.  Any exception
@@ -102,13 +93,10 @@ class Metasploit::Credential::SSHKey < Metasploit::Credential::Private
   #
   # @return [void]
   def readable
-    if data
-      begin
-        openssl_pkey_pkey
-      rescue ArgumentError, OpenSSL::PKey::PKeyError => error
-        errors[:data] << "#{error.class} #{error}"
-      end
-    end
+    return unless data
+    openssl_pkey_pkey
+  rescue ArgumentError, OpenSSL::PKey::PKeyError => error
+    errors[:data] << "#{error.class} #{error}"
   end
 
   # Validates that the private key is not encrypted as unencrypting the private key with its password is not supported:
@@ -116,9 +104,8 @@ class Metasploit::Credential::SSHKey < Metasploit::Credential::Private
   #
   # @return [void]
   def unencrypted
-    if encrypted?
-      errors.add(:data, :encrypted)
-    end
+    return unless encrypted?
+    errors.add(:data, :encrypted)
   end
 
   Metasploit::Concern.run(self)

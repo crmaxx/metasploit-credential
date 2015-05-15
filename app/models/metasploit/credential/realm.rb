@@ -54,9 +54,7 @@ class Metasploit::Credential::Realm < ActiveRecord::Base
   #
 
   search_attribute :key,
-                   type: {
-                       set: :string
-                   }
+                   type: { set: :string }
   search_attribute :value,
                    type: :string
 
@@ -65,15 +63,11 @@ class Metasploit::Credential::Realm < ActiveRecord::Base
   #
 
   validates :key,
-            inclusion: {
-                in: Metasploit::Model::Realm::Key::ALL
-            },
+            inclusion: { in: Metasploit::Model::Realm::Key::ALL },
             presence: true
   validates :value,
             presence: true,
-            uniqueness: {
-                scope: :key
-            }
+            uniqueness: { scope: :key }
 
   #
   # Class Methods

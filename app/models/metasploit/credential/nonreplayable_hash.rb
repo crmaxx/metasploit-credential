@@ -2,7 +2,6 @@
 # Contrast with {Metasploit::Credential::ReplayableHash}.  {#data} is any password hash, such as those recovered from
 # `/etc/passwd` or `/etc/shadow`.
 class Metasploit::Credential::NonreplayableHash < Metasploit::Credential::PasswordHash
-
   #
   # Constants
   #

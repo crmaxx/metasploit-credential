@@ -10,6 +10,15 @@ gemspec
 # Metasploit::Credential::SSHKey validation and helper methods
 gem 'net-ssh'
 
+# Patching inverse association in Mdm models.
+gem 'metasploit-concern', github: 'crmaxx/metasploit-concern', branch: 'staging/rails-4.2'
+
+# Metasploit::Model::Search
+gem 'metasploit-model', github: 'crmaxx/metasploit-model', branch: 'staging/rails-4.2'
+
+# Various Metasploit::Credential records have associations to Mdm records
+gem 'metasploit_data_models', github: 'crmaxx/metasploit_data_models', branch: 'staging/rails-4.2'
+
 group :development do
   # markdown formatting for yard
   gem 'kramdown', platforms: :jruby
@@ -25,7 +34,7 @@ end
 group :development, :test do
   # Hash password for Metasploit::Credential::PasswordHash factories
   gem 'bcrypt'
-    # Uploads simplecov reports to coveralls.io
+  # Uploads simplecov reports to coveralls.io
   gem 'coveralls', require: false
   # supplies factories for producing model instance for specs
   # Version 4.1.0 or newer is needed to support generate calls without the 'FactoryGirl.' in factory definitions syntax.
@@ -38,9 +47,9 @@ group :development, :test do
   # for testing database columns and indicies.
   gem 'shoulda-matchers'
   # code coverage of tests
-  gem 'simplecov', :require => false
+  gem 'simplecov', require: false
   # dummy app
-  gem 'rails', '>= 4.0.9', '< 4.1.0'
+  gem 'rails', '>= 4.2.1'
   # unit testing framework with rails integration
   gem 'rspec-rails', '~> 3.1'
 end

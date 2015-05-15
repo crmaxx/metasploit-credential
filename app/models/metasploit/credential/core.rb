@@ -42,8 +42,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   #   @return [Metasploit::Credential::Origin::Session] if this core credential was gathered using a
   #     {Metasploit::Credential::Origin::Session#post_reference_name post module} attached to a
   #     {Metasploit::Credential::Origin::Session#session session}.
-  belongs_to :origin,
-             polymorphic: true
+  belongs_to :origin, polymorphic: true
 
   # @!attribute private
   #   The {Metasploit::Credential::Private} either gathered from {#realm} or used to
@@ -105,8 +104,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   #
 
   validate :consistent_workspaces
-  validates :origin,
-            presence: true
+  validates :origin, presence: true
 
   #
   # Scopes
@@ -130,7 +128,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # @param origin_class [ActiveRecord::Base] the Origin class to look up
   # @param table_alias [String] an alias for the JOINed table, defaults to the table name
   # @return [ActiveRecord::Relation] scoped to that origin
-  scope :origins, lambda { |origin_class, table_alias=nil|
+  scope :origins, lambda { |origin_class, table_alias = nil|
     core_table   = Metasploit::Credential::Core.arel_table
     origin_table = origin_class.arel_table.alias(table_alias || origin_class.table_name)
     origin_joins = core_table.join(origin_table).on(origin_table[:id].eq(core_table[:origin_id])
@@ -214,41 +212,31 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # @scope Metasploit::Credential::Core
   # @param id [Integer] the workspace to look in
   # @return [ActiveRecord::Relation] scoped to the workspace
-  scope :workspace_id, ->(id) {
-    where(workspace_id: id)
-  }
+  scope :workspace_id, ->(id) { where(workspace_id: id) }
 
   # Eager loads {Metasploit::Credential::Login} objects associated to Cores
   #
   # @method with_logins
   # @return [ActiveRecord::Relation]
-  scope :with_logins, ->() {
-    includes(:logins)
-  }
+  scope :with_logins, -> { includes(:logins) }
 
   # Eager loads {Metasploit::Credential::Public} objects associated to Cores
   #
   # @method with_public
   # @return [ActiveRecord::Relation]
-  scope :with_public, ->() {
-    includes(:public)
-  }
+  scope :with_public, -> { includes(:public) }
 
   # Eager loads {Metasploit::Credential::Private} objects associated to Cores
   #
   # @method with_private
   # @return [ActiveRecord::Relation]
-  scope :with_private, ->() {
-    includes(:private)
-  }
+  scope :with_private, -> { includes(:private) }
 
   # Eager loads {Metasploit::Credential::Realm} objects associated to Cores
   #
   # @method with_realm
   # @return [ActiveRecord::Relation]
-  scope :with_realm, ->() {
-    includes(:realm)
-  }
+  scope :with_realm, -> { includes(:realm) }
 
   #
   #
@@ -307,31 +295,31 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # @return [void]
   def consistent_workspaces
     case origin
-      when Metasploit::Credential::Origin::Manual
-        user = origin.user
+    when Metasploit::Credential::Origin::Manual
+      user = origin.user
 
-        # admins can access any workspace so there's no inconsistent workspace
-        unless user &&
-               (
-                user.admin ||
-                # use database query when possible
-                (
-                 user.persisted? &&
-                 user.workspaces.exists?(self.workspace.id)
-                ) ||
-                # otherwise fall back to in-memory query
-                user.workspaces.include?(self.workspace)
-               )
-          errors.add(:workspace, :origin_user_workspaces)
-        end
-      when Metasploit::Credential::Origin::Service
-        unless self.workspace == origin.service.try(:host).try(:workspace)
-          errors.add(:workspace, :origin_service_host_workspace)
-        end
-      when Metasploit::Credential::Origin::Session
-        unless self.workspace == origin.session.try(:host).try(:workspace)
-          errors.add(:workspace, :origin_session_host_workspace)
-        end
+      # admins can access any workspace so there's no inconsistent workspace
+      unless user &&
+             (
+              user.admin ||
+              # use database query when possible
+              (
+               user.persisted? &&
+               user.workspaces.exists?(workspace.id)
+              ) ||
+              # otherwise fall back to in-memory query
+              user.workspaces.include?(workspace)
+             )
+        errors.add(:workspace, :origin_user_workspaces)
+      end
+    when Metasploit::Credential::Origin::Service
+      unless workspace == origin.service.try(:host).try(:workspace)
+        errors.add(:workspace, :origin_service_host_workspace)
+      end
+    when Metasploit::Credential::Origin::Session
+      unless workspace == origin.session.try(:host).try(:workspace)
+        errors.add(:workspace, :origin_session_host_workspace)
+      end
     end
   end
 
