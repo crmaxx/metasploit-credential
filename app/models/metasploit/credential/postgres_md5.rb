@@ -27,19 +27,16 @@ class Metasploit::Credential::PostgresMD5 < Metasploit::Credential::ReplayableHa
   # ({Metasploit::Credential::Private#type}, {#data}) catches collision in a case-insensitive manner without the need
   # to use case-insensitive comparisons.
   def normalize_data
-    if data
-      self.data = data.downcase
-    end
+    return unless data
+    self.data = data.downcase
   end
 
   def data_format
-    unless DATA_REGEXP.match(data)
-      errors.add(:data, 'is not in Postgres MD5 Hash format')
-    end
+    return if DATA_REGEXP.match(data)
+    errors.add(:data, 'is not in Postgres MD5 Hash format')
   end
 
   public
 
   Metasploit::Concern.run(self)
-
 end

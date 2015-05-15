@@ -59,11 +59,9 @@ class Metasploit::Credential::NTLMHash < Metasploit::Credential::ReplayableHash
   #
   # @return (see #data)
   def self.data_from_password_data(password_data)
-    hex_digests = ['', 'nt_'].collect do |prefix|
+    ['', 'nt_'].collect do |prefix|
       send("#{prefix}lan_manager_hex_digest_from_password_data", password_data)
-    end
-
-    hex_digests.join(':')
+    end.join(':')
   end
 
   # Converts a buffer containing `hash` bytes to a String containing the hex digest of that `hash`.
@@ -104,11 +102,11 @@ class Metasploit::Credential::NTLMHash < Metasploit::Credential::ReplayableHash
   #
 
   def blank_password?
-    self.data.include? "#{BLANK_LM_HASH}:#{BLANK_NT_HASH}"
+    data.include? "#{BLANK_LM_HASH}:#{BLANK_NT_HASH}"
   end
 
   def lm_hash_present?
-    !self.data.start_with? BLANK_LM_HASH
+    !data.start_with? BLANK_LM_HASH
   end
 
   private
@@ -117,17 +115,15 @@ class Metasploit::Credential::NTLMHash < Metasploit::Credential::ReplayableHash
   # ({Metasploit::Credential::Private#type}, {#data}) catches collision in a case-insensitive manner without the need
   # to use case-insensitive comparisons.
   def normalize_data
-    if data
-      self.data = data.downcase
-    end
+    return unless data
+    self.data = data.downcase
   end
 
   # Validates that {#data} is in the NTLM data format of <LAN Manager hex digest>:<NT LAN Manager hex digest>. Both hex
   # digests are 32 lowercase hexadecimal characters.
   def data_format
-    unless DATA_REGEXP.match(data)
-      errors.add(:data, :format)
-    end
+    return if DATA_REGEXP.match(data)
+    errors.add(:data, :format)
   end
 
   public

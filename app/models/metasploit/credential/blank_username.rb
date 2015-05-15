@@ -10,8 +10,7 @@ class Metasploit::Credential::BlankUsername < Metasploit::Credential::Public
   # Validations
   #
 
-  validates :username,
-            uniqueness: true
+  validates :username, uniqueness: true
 
   #
   # Instance Methods

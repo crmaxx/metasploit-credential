@@ -640,7 +640,7 @@ ALTER SEQUENCE macros_id_seq OWNED BY macros.id;
 CREATE TABLE metasploit_credential_cores (
     id integer NOT NULL,
     origin_id integer NOT NULL,
-    origin_type character varying(255) NOT NULL,
+    origin_type character varying NOT NULL,
     private_id integer,
     public_id integer,
     realm_id integer,
@@ -678,8 +678,8 @@ CREATE TABLE metasploit_credential_logins (
     id integer NOT NULL,
     core_id integer NOT NULL,
     service_id integer NOT NULL,
-    access_level character varying(255),
-    status character varying(255) NOT NULL,
+    access_level character varying,
+    status character varying NOT NULL,
     last_attempted_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
@@ -869,11 +869,11 @@ ALTER SEQUENCE metasploit_credential_origin_sessions_id_seq OWNED BY metasploit_
 
 CREATE TABLE metasploit_credential_privates (
     id integer NOT NULL,
-    type character varying(255) NOT NULL,
+    type character varying NOT NULL,
     data text NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    jtr_format character varying(255)
+    jtr_format character varying
 );
 
 
@@ -902,10 +902,10 @@ ALTER SEQUENCE metasploit_credential_privates_id_seq OWNED BY metasploit_credent
 
 CREATE TABLE metasploit_credential_publics (
     id integer NOT NULL,
-    username character varying(255) NOT NULL,
+    username character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    type character varying(255) NOT NULL
+    type character varying NOT NULL
 );
 
 
@@ -934,8 +934,8 @@ ALTER SEQUENCE metasploit_credential_publics_id_seq OWNED BY metasploit_credenti
 
 CREATE TABLE metasploit_credential_realms (
     id integer NOT NULL,
-    key character varying(255) NOT NULL,
-    value character varying(255) NOT NULL,
+    key character varying NOT NULL,
+    value character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
@@ -4090,3 +4090,4 @@ INSERT INTO schema_migrations (version) VALUES ('7');
 INSERT INTO schema_migrations (version) VALUES ('8');
 
 INSERT INTO schema_migrations (version) VALUES ('9');
+

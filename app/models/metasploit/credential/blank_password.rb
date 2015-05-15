@@ -10,8 +10,7 @@ class Metasploit::Credential::BlankPassword < Metasploit::Credential::Password
   # Validations
   #
 
-  validates :data,
-            uniqueness: true
+  validates :data, uniqueness: true
 
   #
   # Instance Methods

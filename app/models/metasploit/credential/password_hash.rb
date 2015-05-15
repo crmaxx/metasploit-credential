@@ -15,8 +15,7 @@ class Metasploit::Credential::PasswordHash < Metasploit::Credential::Private
   # Validations
   #
 
-  validates :data,
-            presence: true
+  validates :data, presence: true
 
   Metasploit::Concern.run(self)
 end

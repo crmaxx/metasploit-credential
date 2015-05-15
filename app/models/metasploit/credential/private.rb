@@ -68,12 +68,12 @@ class Metasploit::Credential::Private < ActiveRecord::Base
   #
 
   search_with Metasploit::Credential::Search::Operator::Type,
-              class_names: %w{
+              class_names: %w(
                 Metasploit::Credential::NonreplayableHash
                 Metasploit::Credential::NTLMHash
                 Metasploit::Credential::Password
                 Metasploit::Credential::SSHKey
-              }
+              )
 
   #
   # Validations
@@ -81,9 +81,7 @@ class Metasploit::Credential::Private < ActiveRecord::Base
 
   validates :data,
             non_nil: true,
-            uniqueness: {
-                scope: :type
-            }
+            uniqueness: { scope: :type }
 
   #
   # Instance Methods

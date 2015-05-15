@@ -13,8 +13,8 @@ module Metasploit::Credential::Importer::Base
       Metasploit::Credential::NTLMHash,
       Metasploit::Credential::Password,
       Metasploit::Credential::PostgresMD5,
-      Metasploit::Credential::SSHKey].map(&:name)
-
+      Metasploit::Credential::SSHKey
+  ].map(&:name)
 
   # Whitelist of the {Metasploit::Credential::Private} subclass names allowed
   # in short-form CSV imports.
@@ -22,7 +22,8 @@ module Metasploit::Credential::Importer::Base
       Metasploit::Credential::NonreplayableHash,
       Metasploit::Credential::NTLMHash,
       Metasploit::Credential::Password,
-      Metasploit::Credential::PostgresMD5].map(&:name)
+      Metasploit::Credential::PostgresMD5
+  ].map(&:name)
 
   included do
     include ActiveModel::Validations
@@ -56,13 +57,12 @@ module Metasploit::Credential::Importer::Base
     validates :input, presence: true
   end
 
-
   #
   # Instance Methods
   #
 
   # @param attributes [Hash{Symbol => String,nil}]
-  def initialize(attributes={})
+  def initialize(attributes = {})
     attributes.each do |attribute, value|
       public_send("#{attribute}=", value)
     end

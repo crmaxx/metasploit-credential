@@ -7,14 +7,14 @@ class Metasploit::Credential::Login < ActiveRecord::Base
   #
   # Associations
   #
-  
+
   # @!attribute tasks
   #   The `Mdm::Task`s using this to track what tasks interacted with a given core.
   #
   #   @return [ActiveRecord::Relation<Mdm::Task>]
   has_and_belongs_to_many :tasks,
                           -> { uniq },
-                          class_name: "Mdm::Task", 
+                          class_name: "Mdm::Task",
                           join_table: "credential_logins_tasks"
 
   # @!attribute core
@@ -111,12 +111,8 @@ class Metasploit::Credential::Login < ActiveRecord::Base
   # Search Attributes
   #
 
-  search_attribute :access_level,
-                   type: :string
-  search_attribute :status,
-                   type: {
-                       set: :string
-                   }
+  search_attribute :access_level, type: :string
+  search_attribute :status, type: { set: :string }
 
   #
   #
@@ -137,17 +133,10 @@ class Metasploit::Credential::Login < ActiveRecord::Base
 
   validates :core,
             presence: true
-  validates :core_id,
-            uniqueness: {
-                scope: :service_id
-            }
+  validates :core_id, uniqueness: { scope: :service_id }
   validates :service,
             presence: true
-  validates :status,
-            inclusion: {
-                in: Metasploit::Model::Login::Status::ALL
-            }
-
+  validates :status, inclusion: { in: Metasploit::Model::Login::Status::ALL }
 
   #
   # Scopes
@@ -185,7 +174,7 @@ class Metasploit::Credential::Login < ActiveRecord::Base
         Metasploit::Credential::Public[:username]
       ]
     ).order(:last_attempted_at).
-      joins(
+    joins(
       Metasploit::Credential::Login.join_association(:core),
       Metasploit::Credential::Core.join_association(:public, Arel::Nodes::OuterJoin)
     ).where(
@@ -198,12 +187,11 @@ class Metasploit::Credential::Login < ActiveRecord::Base
           [
             Metasploit::Model::Login::Status::DENIED_ACCESS,
             Metasploit::Model::Login::Status::DISABLED,
-            Metasploit::Model::Login::Status::INCORRECT,
+            Metasploit::Model::Login::Status::INCORRECT
           ]
         ))
     ).group_by(&:username)
   end
-
 
   # The valid values for search {#status}.
   #
@@ -224,9 +212,8 @@ class Metasploit::Credential::Login < ActiveRecord::Base
   #
   # @return [void]
   def blank_to_nil
-    if access_level.blank?
-      self.access_level = nil
-    end
+    return unless access_level.blank?
+    self.access_level = nil
   end
 
   # Validates that {#last_attempted_at} is `nil` when {#status} is {Metasploit:Credential::Login::Status::UNTRIED} and

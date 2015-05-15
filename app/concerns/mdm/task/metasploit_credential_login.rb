@@ -11,9 +11,9 @@ module Mdm::Task::MetasploitCredentialLogin
     #   The {Metasploit::Credential::Core credential origins} from this import task.
     #
     #   @return [ActiveRecord::Relation<Metasploit::Credential::Core>]
-    has_and_belongs_to_many :credential_logins, 
+    has_and_belongs_to_many :credential_logins,
                             -> { uniq },
-                            class_name: "Metasploit::Credential::Login", 
+                            class_name: "Metasploit::Credential::Login",
                             join_table: "credential_logins_tasks"
   end
 end
